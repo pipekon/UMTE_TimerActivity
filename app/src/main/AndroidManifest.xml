@@ -9,6 +9,23 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <receiver
+                android:name=".util.TimerNotificationAcrtionReceiver"
+                android:enabled="true"
+                android:exported="false">
+        </receiver>
+        <receiver
+                android:name=".util.TimerExpiredReceiveer"
+                android:enabled="true"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="stop"/>
+                <action android:name="start"/>
+                <action android:name="pause"/>
+                <action android:name="resume"/>
+            </intent-filter>
+        </receiver>
+
         <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name"

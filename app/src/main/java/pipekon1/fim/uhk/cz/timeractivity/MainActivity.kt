@@ -1,17 +1,47 @@
 package pipekon1.fim.uhk.cz.timeractivity
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import pipekon1.fim.uhk.cz.timeractivity.MainActivity.Companion.removeAlarm
+import pipekon1.fim.uhk.cz.timeractivity.util.NotificationUtil
 import pipekon1.fim.uhk.cz.timeractivity.util.PrefUtil
+import pipekon1.fim.uhk.cz.timeractivity.util.TimerExpiredReceiveer
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+         fun setAlarm(context: Context, nowSeconds: Long, secondRemaining: Long): Long {
+             val wakeUpTime = (nowSeconds + secondRemaining) * 1000
+             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+             val intent = Intent(context, TimerExpiredReceiveer::class.java)
+             val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+             alarmManager.setExact(AlarmManager.RTC_WAKEUP, wakeUpTime, pendingIntent)
+             PrefUtil.setAlarmSetTime(nowSeconds, context)
+             return wakeUpTime
+         }
+
+        fun removeAlarm(context: Context) {
+            val intent = Intent(context, TimerExpiredReceiveer::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.cancel(pendingIntent)
+            PrefUtil.setAlarmSetTime(0, context)
+        }
+
+        val nowSeconds: Long
+        get() = Calendar.getInstance().timeInMillis / 1000
+    }
 
     enum class  TimerState{
         Stopped, Paused, Running
@@ -20,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timer: CountDownTimer
     private var timerLengthSeconds: Long = 0
     private var timerState = TimerState.Stopped
-
     private var secondsRemaining = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,19 +64,15 @@ class MainActivity : AppCompatActivity() {
             timerState = TimerState.Running
             updateButtons()
         }
-
         fab_pause.setOnClickListener { v ->
             timer.cancel()
             timerState = TimerState.Paused
             updateButtons()
         }
-
         fab_stop.setOnClickListener { v->
             timer.cancel()
             onTimerFinished()
         }
-
-
     }
 
     override fun onResume() {
@@ -55,7 +80,9 @@ class MainActivity : AppCompatActivity() {
 
         initTimer()
 
-        //TODO remove background timer, hide notification
+        removeAlarm(this)
+
+        NotificationUtil.hideTimerNotification(this)
     }
 
     override fun onPause() {
@@ -63,10 +90,11 @@ class MainActivity : AppCompatActivity() {
 
         if (timerState == TimerState.Running){
             timer.cancel()
-            //TODO: start background timer and show notofication
+            val wakeUpTime = setAlarm(this, nowSeconds, secondsRemaining)
+            NotificationUtil.showTimerRunning(this, wakeUpTime)
         }
         else if(timerState == TimerState.Paused){
-
+            NotificationUtil.showTimerPaused(this)
         }
         PrefUtil.setPreviousTimerLengthSeconds(timerLengthSeconds, this)
         PrefUtil.setSecondsRemaining(secondsRemaining, this)
@@ -86,11 +114,14 @@ class MainActivity : AppCompatActivity() {
             PrefUtil.getSecondsRemaining(this)
         else
             timerLengthSeconds
-        //TODO: change secondRemaining accroding to where the background stopped
 
-        //resume where we left off
+        val alarmSetTime = PrefUtil.getAlarmSetTime(this)
+        if(alarmSetTime > 0)
+            secondsRemaining -= nowSeconds - alarmSetTime
 
-        if(timerState == TimerState.Running)
+        if (secondsRemaining <= 0)
+            onTimerFinished()
+        else if(timerState == TimerState.Running)
             startTimer()
 
         updateButtons()
