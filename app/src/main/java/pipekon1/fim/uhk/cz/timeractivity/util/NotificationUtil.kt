@@ -10,9 +10,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import androidx.core.app.NotificationCompat
-import pipekon1.fim.uhk.cz.timeractivity.MainActivity
+import pipekon1.fim.uhk.cz.timeractivity.TimerActivity
 import pipekon1.fim.uhk.cz.timeractivity.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,7 +34,7 @@ class NotificationUtil {
             )
             nBuilder.setContentTitle("Time Expired!")
                 .setContentText("Start again?")
-                .setContentIntent(getPendingIntentWithStack(context, MainActivity::class.java))
+                .setContentIntent(getPendingIntentWithStack(context, TimerActivity::class.java))
                 .addAction(R.drawable.ic_play, "Start", startPendingIntent)
 
             val nManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -62,7 +61,7 @@ class NotificationUtil {
             )
             nBuilder.setContentTitle("Time is Running")
                 .setContentText("End: ${df.format(Date(wakeUpTime))}")
-                .setContentIntent(getPendingIntentWithStack(context, MainActivity::class.java))
+                .setContentIntent(getPendingIntentWithStack(context, TimerActivity::class.java))
                 .setOngoing(true)
                 .addAction(R.drawable.ic_stop, "Stop", stopPendingIntent)
                 .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)
@@ -85,7 +84,7 @@ class NotificationUtil {
             )
             nBuilder.setContentTitle("Time is paused.")
                 .setContentText("Resume?")
-                .setContentIntent(getPendingIntentWithStack(context, MainActivity::class.java))
+                .setContentIntent(getPendingIntentWithStack(context, TimerActivity::class.java))
                 .setOngoing(true)
                 .addAction(R.drawable.ic_play, "Resume", resumePendingIntent)
 

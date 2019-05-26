@@ -1,7 +1,7 @@
 package pipekon1.fim.uhk.cz.timeractivity.util
 
 import android.content.Context
-import pipekon1.fim.uhk.cz.timeractivity.MainActivity
+import pipekon1.fim.uhk.cz.timeractivity.TimerActivity
 
 
 class PrefUtil(context: Context) {
@@ -10,11 +10,9 @@ class PrefUtil(context: Context) {
 
     companion object {
 
-
         fun getTimerLength(context: Context): Int {
             return 1
         }
-
         private val PREFS_NAME = "pipekon1.fim.uhk.cz"
         private val PREVIOUS_TIMER_LENGTH_SECONDS_ID = "previous_timer_length"
         private val ALARM_SET_TIME_ID = "backgrounded_time"
@@ -37,14 +35,14 @@ class PrefUtil(context: Context) {
 
         private val TIMER_STATE_ID = "pipekon1.fim.uhk.cz.timer.timer_state"
 
-        fun getTimerState(context: Context): MainActivity.TimerState {
+        fun getTimerState(context: Context): TimerActivity.TimerState {
             val preference = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             val ordinal = preference.getInt(TIMER_STATE_ID, 0)
-            return MainActivity.TimerState.values()[ordinal]
+            return TimerActivity.TimerState.values()[ordinal]
 
         }
 
-        fun setTimerState(state: MainActivity.TimerState, context: Context) {
+        fun setTimerState(state: TimerActivity.TimerState, context: Context) {
             val preference = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             val editor = preference.edit()
             val ordinal = state.ordinal
