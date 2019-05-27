@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "427895623322",
+    "firebase_url": "https://timeractivity-cf8d2.firebaseio.com",
+    "project_id": "timeractivity-cf8d2",
+    "storage_bucket": "timeractivity-cf8d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427895623322:android:5265ab26ab6b99e8",
+        "android_client_info": {
+          "package_name": "pipekon1.fim.uhk.cz.timeractivity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427895623322-pofd8i464hviejl4379p23hj5ineljh4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pipekon1.fim.uhk.cz.timeractivity",
+            "certificate_hash": "bacac74619422b889217e3beff2098317b21dc7b"
+          }
+        },
+        {
+          "client_id": "427895623322-m5llqjhjjrucriidg8pf7rvf2uir5q7c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRlmdhVln6k-W_QfPPFMFogzyWTTKuuik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427895623322-m5llqjhjjrucriidg8pf7rvf2uir5q7c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
