@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay" android:id="@+id/appBarLayout">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -21,7 +21,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
+    <include layout="@layout/content_main" android:id="@+id/include"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_pause"
@@ -46,10 +46,44 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_bigger_margin"
             app:srcCompat="@drawable/ic_stop"/>
-    <Switch
-            android:text="Switch"
+
+    <Button
+            android:id="@+id/confirmButton"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="110dp"
+            android:background="@drawable/rounded_select_photo"
+            android:text="Ukončit aktivitu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/switch1"/>
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"/>
+
+    <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/seekbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+
+            android:layout_marginTop="55dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" app:layout_anchorGravity="top|center"
+            app:layout_anchor="@+id/include"/>
+
+    <SeekBar
+            android:id="@+id/seekBar"
+            android:max="10"
+            android:progress="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp" style="@android:style/Widget.Material.Light.SeekBar"/>
+
+    <TextView
+            android:text="Počet minut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textView" android:layout_marginTop="70dp"
+            android:layout_marginLeft="30dp"/>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

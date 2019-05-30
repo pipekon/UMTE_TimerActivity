@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, TimerActivity::class.java))
                     Toast.makeText(this, "Successfully logged in", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this, "Error, bad username or password", Toast.LENGTH_LONG).show()

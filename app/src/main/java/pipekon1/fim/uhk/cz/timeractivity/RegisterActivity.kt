@@ -3,12 +3,16 @@ package pipekon1.fim.uhk.cz.timeractivity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_register.*
+import pipekon1.fim.uhk.cz.timeractivity.util.TimerExpiredReceiveer
 
 import java.util.*
 
@@ -32,17 +36,7 @@ class RegisterActivity : AppCompatActivity() {
 
         showSignInOptions()
 
-        btn_sign_out.setOnClickListener {
-            AuthUI.getInstance().signOut(this)
-                .addOnCompleteListener {
-                    btn_sign_out.isEnabled = false
-                    showSignInOptions()
 
-                }
-                .addOnFailureListener {
-                    e->Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
-                }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -54,7 +48,26 @@ class RegisterActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser //aktual uzivatel
             Toast.makeText(this, ""+user!!.email,Toast.LENGTH_SHORT).show()
 
-            btn_sign_out.isEnabled = true
+         /*   //ulozeni
+            val uid = FirebaseAuth.getInstance().uid ?: ""
+            val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+            val email = user!!.email
+
+            if(email != null) {
+                val user = User(uid, email)
+            }
+
+            ref.setValue(user)
+                .addOnSuccessListener {
+                    Log.d("RegisterActivity", "Finally we saved the user to Firebase Database")
+                }
+                .addOnFailureListener {
+                    Log.d("RegisterActivity", "Failed to set value to database: ${it.message}")
+                }*/
+
+            // btn_sign_out.isEnabled = true
+            val intent = Intent(this, TimerActivity::class.java)
+            startActivity(intent)
         }
         else
         {
@@ -62,8 +75,6 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
     }
-
-
 
     private fun showSignInOptions() {
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
@@ -73,3 +84,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
 }
+
+/*
+class User(val uid: String, val email: String)*/

@@ -1,5 +1,6 @@
 package pipekon1.fim.uhk.cz.timeractivity
 
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -9,6 +10,8 @@ import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+
 
 import kotlinx.android.synthetic.main.timer_activity.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -16,6 +19,9 @@ import pipekon1.fim.uhk.cz.timeractivity.util.NotificationUtil
 import pipekon1.fim.uhk.cz.timeractivity.util.PrefUtil
 import pipekon1.fim.uhk.cz.timeractivity.util.TimerExpiredReceiveer
 import java.util.*
+import android.widget.SeekBar
+
+
 
 class TimerActivity : AppCompatActivity() {
 
@@ -51,6 +57,7 @@ class TimerActivity : AppCompatActivity() {
     private var timerState = TimerState.Stopped
     private var secondsRemaining = 0L
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.timer_activity)
@@ -58,9 +65,29 @@ class TimerActivity : AppCompatActivity() {
         supportActionBar?.setIcon(R.drawable.ic_timer)
         supportActionBar?.title = "Timer"
 
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+
+                val seekbarValue = i.toString()
+
+                textView1.setText(seekbarValue)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+            }
+        })
+
         fab_start.setOnClickListener { v ->
             startTimer()
             timerState = TimerState.Running
+        //    setNewTimerLength()
             updateButtons()
         }
         fab_pause.setOnClickListener { v ->
@@ -71,6 +98,27 @@ class TimerActivity : AppCompatActivity() {
         fab_stop.setOnClickListener { v->
             timer.cancel()
             onTimerFinished()
+        }
+
+        confirmButton.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle("Dialog")
+            builder.setMessage("Opravdu chcete aktivitu ukončit?")
+
+            builder.setPositiveButton("Ano") { dialog, _ ->
+                val resultIntent = Intent()
+                resultIntent.putExtra("result", "Done!")
+                setResult(Activity.RESULT_OK, resultIntent)
+                dialog.dismiss()
+                finish()
+            }
+
+            builder.setNegativeButton("Zrušit") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            builder.create().show()
         }
     }
 
@@ -102,7 +150,9 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private fun initTimer(){
-        timerState = PrefUtil.getTimerState(this)
+        //timerState = PrefUtil.getTimerState(this)
+
+   //     var roundsRemaining = seekBarOpak.getProgress()
 
         if(timerState == TimerState.Stopped)
             setNewTimerLength()
@@ -118,10 +168,24 @@ class TimerActivity : AppCompatActivity() {
         if(alarmSetTime > 0)
             secondsRemaining -= nowSeconds - alarmSetTime
 
-        if (secondsRemaining <= 0)
+        if (secondsRemaining <= 0){
+            onTimerFinished()
+        }
+        else if(timerState == TimerState.Running) {
+            startTimer()
+        }
+
+  /*      if (secondsRemaining <= 0 && roundsRemaining < 0){
+            roundsRemaining -=1
+            setNewTimerLength()
+            startTimer()
+        }*/
+
+
+       /* if (secondsRemaining <= 0 && roundsRemaining == 0)
             onTimerFinished()
         else if(timerState == TimerState.Running)
-            startTimer()
+            startTimer()*/
 
         updateButtons()
         updateCountdownUI()
@@ -143,7 +207,10 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private fun startTimer(){
+
         timerState = TimerState.Running
+
+
 
         timer = object: CountDownTimer(secondsRemaining*1000, 1000) {
             override fun onFinish() = onTimerFinished()
@@ -155,8 +222,18 @@ class TimerActivity : AppCompatActivity() {
         }.start()
     }
 
+/*
     private fun setNewTimerLength(){
+        val initTime = seekBar.getProgress()
         val lengthInMinutes = PrefUtil.getTimerLength(this)
+        timerLengthSeconds = (lengthInMinutes * 60L)
+        progress_countdown.max = timerLengthSeconds.toInt()
+    }
+*/
+
+    private fun setNewTimerLength(){
+        val lengthInMinutes = seekBar.getProgress()
+        //val lengthInMinutes = PrefUtil.getTimerLength(this)
         timerLengthSeconds = (lengthInMinutes * 60L)
         progress_countdown.max = timerLengthSeconds.toInt()
     }
@@ -181,12 +258,12 @@ class TimerActivity : AppCompatActivity() {
             TimerState.Running -> {
                 fab_start.isEnabled = false
                 fab_pause.isEnabled = true
-                fab_stop.isEnabled = true
+                fab_stop.isEnabled = false
             }
             TimerState.Stopped -> {
                 fab_start.isEnabled = true
                 fab_pause.isEnabled = false
-                fab_stop.isEnabled = false
+                fab_stop.isEnabled = true
             }
             TimerState.Paused -> {
                 fab_start.isEnabled = true

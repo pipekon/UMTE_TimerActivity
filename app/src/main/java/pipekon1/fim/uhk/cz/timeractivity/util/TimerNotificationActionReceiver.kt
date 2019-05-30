@@ -13,6 +13,8 @@ class TimerNotificationActionReceiver : BroadcastReceiver() {
               TimerActivity.removeAlarm(context)
               PrefUtil.setTimerState(TimerActivity.TimerState.Stopped, context)
               NotificationUtil.hideTimerNotification(context)
+
+
           }
           AppConstants.ACTION_PAUSE -> {
               var secondsRemaining = PrefUtil.getSecondsRemaining(context)
